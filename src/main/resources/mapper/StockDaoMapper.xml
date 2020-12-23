@@ -5,5 +5,8 @@
         select id, name ,count ,sale , version from stock  where id = #{id}
 
     </select>
+    <update id="updateStockSale" parameterType="Stock">
+        update stock set sale = #{sale} where id = #{id}
+    </update>
 
 </mapper>

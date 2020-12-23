@@ -21,6 +21,8 @@ public class OrdServiceImpl  implements  OrderService{
            return 0;
        }else{
            // 2. 扣除库存
+           stock.setSale(stock.getSale()+1);
+           stockDao.updateStockSale(stock);
            // 3. 创建订单
            return 123;
        }
