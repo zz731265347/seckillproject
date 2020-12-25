@@ -8,4 +8,6 @@ public interface StockDao {
     Stock getStock(@Param("id") Integer id);
 
     void updateStockSale(Stock stock);
+
+    int updateStockSaleVesion(Stock stock);
 }
