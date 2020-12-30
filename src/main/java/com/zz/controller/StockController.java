@@ -1,11 +1,14 @@
 package com.zz.controller;
 
+import com.google.common.util.concurrent.RateLimiter;
 import com.zz.service.OrderService;
 import com.zz.util.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("stock")
@@ -14,6 +17,8 @@ public class StockController {
 
     @Autowired
     private OrderService orderService;
+
+    private  RateLimiter  rateLimiter= RateLimiter.create(10);
 
     @RequestMapping("kill")
     //悲观锁的实现解决超买
@@ -39,6 +44,10 @@ public class StockController {
         log.info(" 乐观锁抢购商品ID = {}",id);
         //根据商品ID 进行秒杀业务处理
         log.info(DateUtils.yyyymmddHHmmss());
+        Boolean flag = rateLimiter.tryAcquire(3, TimeUnit.MICROSECONDS);
+        if(!flag){
+            return "当前活动太火爆了，请稍后重试~";
+        }
         int ordid   = orderService.pessimistickillStock( id);
         if(ordid == 0)
             return "抢购失败";
